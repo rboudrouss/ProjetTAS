@@ -10,8 +10,6 @@ import it.unive.lisa.symbolic.value.operator.binary.BinaryOperator;
 import it.unive.lisa.util.representation.StringRepresentation;
 import it.unive.lisa.util.representation.StructuredRepresentation;
 
-import java.util.HashSet;
-
 public class Intervalles implements BaseNonRelationalValueDomain<Intervalles> {
     private IntOrInf left, right;
     private final static Intervalles TOP, BOTTOM;
@@ -35,28 +33,28 @@ public class Intervalles implements BaseNonRelationalValueDomain<Intervalles> {
 
     @Override
     public Intervalles wideningAux(Intervalles other) throws SemanticException {
-        if(this.isBottom())
+        if (this.isBottom())
             return other;
-        if(other.isBottom())
+        if (other.isBottom())
             return this;
         if (this.isTop() || other.isTop())
             return this.top();
         IntOrInf left = min(this.left, other.left),
                 right = max(this.right, other.right);
-        if((! other.right.isPlusInf()) && (! this.right.isPlusInf()) &&
-                other.right.value>this.right.value)
+        if ((!other.right.isPlusInf()) && (!this.right.isPlusInf()) &&
+                other.right.value > this.right.value)
             right = new IntOrInf(true);
-        if((! other.left.isMinusInf()) && (! this.left.isMinusInf()) &&
-                this.left.value<other.left.value)
+        if ((!other.left.isMinusInf()) && (!this.left.isMinusInf()) &&
+                this.left.value < other.left.value)
             left = new IntOrInf(false);
         return new Intervalles(left, right);
     }
 
     @Override
     public Intervalles lubAux(Intervalles other) throws SemanticException {
-        if(this.isBottom())
+        if (this.isBottom())
             return other;
-        if(other.isBottom())
+        if (other.isBottom())
             return this;
         if (this.isTop() || other.isTop())
             return this.top();
@@ -64,24 +62,25 @@ public class Intervalles implements BaseNonRelationalValueDomain<Intervalles> {
     }
 
     private static IntOrInf min(IntOrInf left, IntOrInf right) {
-        if(left.isMinusInf() || right.isMinusInf())
+        if (left.isMinusInf() || right.isMinusInf())
             return new IntOrInf(false);
-        if(left.isPlusInf())
+        if (left.isPlusInf())
             return right;
-        if(right.isPlusInf())
+        if (right.isPlusInf())
             return left;
         return new IntOrInf(Math.min(left.value, right.value));
     }
 
     private static IntOrInf max(IntOrInf left, IntOrInf right) {
-        if(left.isPlusInf() || right.isPlusInf())
+        if (left.isPlusInf() || right.isPlusInf())
             return new IntOrInf(true);
-        if(left.isMinusInf())
+        if (left.isMinusInf())
             return right;
-        if(right.isMinusInf())
+        if (right.isMinusInf())
             return left;
         return new IntOrInf(Math.max(left.value, right.value));
     }
+
     @Override
     public boolean lessOrEqualAux(Intervalles other) throws SemanticException {
         return other.left.lessOrEqual(this.left) &&
@@ -90,8 +89,8 @@ public class Intervalles implements BaseNonRelationalValueDomain<Intervalles> {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof Intervalles) {
-            if(this.left.equals(((Intervalles) obj).left) &&
+        if (obj instanceof Intervalles) {
+            if (this.left.equals(((Intervalles) obj).left) &&
                     this.right.equals(((Intervalles) obj).right))
                 return true;
         }
@@ -105,7 +104,7 @@ public class Intervalles implements BaseNonRelationalValueDomain<Intervalles> {
 
     @Override
     public String toString() {
-        return "["+this.left.toString()+".."+this.right.toString()+"]";
+        return "[" + this.left.toString() + ".." + this.right.toString() + "]";
     }
 
     @Override
@@ -124,8 +123,9 @@ public class Intervalles implements BaseNonRelationalValueDomain<Intervalles> {
     }
 
     @Override
-    public Intervalles evalNonNullConstant(Constant constant, ProgramPoint pp, SemanticOracle oracle) throws SemanticException {
-        if(constant.getValue() instanceof Integer)
+    public Intervalles evalNonNullConstant(Constant constant, ProgramPoint pp, SemanticOracle oracle)
+            throws SemanticException {
+        if (constant.getValue() instanceof Integer)
             return new Intervalles(((Integer) constant.getValue()).intValue());
         return BaseNonRelationalValueDomain.super.evalNonNullConstant(constant, pp, oracle);
     }
@@ -135,87 +135,92 @@ public class Intervalles implements BaseNonRelationalValueDomain<Intervalles> {
     IntOrInf getRight() {return right;}
 
     @Override
-    public Intervalles evalBinaryExpression(BinaryOperator operator, Intervalles left, Intervalles right, ProgramPoint pp, SemanticOracle oracle) throws SemanticException {
-        if(operator instanceof ArithmeticOperator) {
+    public Intervalles evalBinaryExpression(BinaryOperator operator, Intervalles left, Intervalles right,
+            ProgramPoint pp, SemanticOracle oracle) throws SemanticException {
+        if (operator instanceof ArithmeticOperator) {
             if (left.isBottom() || right.isBottom())
                 return this.bottom();
-            HashSet<Integer> s = new HashSet<>();
             if (operator instanceof AdditionOperator)
                 return new Intervalles(add(left.left, right.left), add(left.right, right.right));
-            if(operator instanceof SubtractionOperator)
+            if (operator instanceof SubtractionOperator)
                 return new Intervalles(subtract(left.left, right.right), subtract(left.right, right.left));
-            //else throw new SemanticException("Unsupported operator");
+            // else throw new SemanticException("Unsupported operator");
         }
         return BaseNonRelationalValueDomain.super.evalBinaryExpression(operator, left, right, pp, oracle);
     }
+
     private static IntOrInf subtract(IntOrInf left, IntOrInf right) throws SemanticException {
-        if(left.isPlusInf() && right.isPlusInf())
+        if (left.isPlusInf() && right.isPlusInf())
             throw new SemanticException("Cannot add minus and plus infinite");
-        if(right.isMinusInf() && left.isMinusInf())
+        if (right.isMinusInf() && left.isMinusInf())
             throw new SemanticException("Cannot add minus and plus infinite");
-        if(left.isPlusInf() && right.isMinusInf())
+        if (left.isPlusInf() && right.isMinusInf())
             return new IntOrInf(true);
-        if(left.isMinusInf() && right.isPlusInf())
+        if (left.isMinusInf() && right.isPlusInf())
             return new IntOrInf(false);
-        return new IntOrInf(left.value-right.value);
+        return new IntOrInf(left.value - right.value);
     }
+
     private static IntOrInf add(IntOrInf left, IntOrInf right) throws SemanticException {
-        if(left.isPlusInf() && right.isMinusInf())
+        if (left.isPlusInf() && right.isMinusInf())
             throw new SemanticException("Cannot add minus and plus infinite");
-        if(right.isPlusInf() && left.isMinusInf())
+        if (right.isPlusInf() && left.isMinusInf())
             throw new SemanticException("Cannot add minus and plus infinite");
-        if(left.isPlusInf() || right.isPlusInf())
+        if (left.isPlusInf() || right.isPlusInf())
             return new IntOrInf(true);
-        if(left.isMinusInf() || right.isMinusInf())
+        if (left.isMinusInf() || right.isMinusInf())
             return new IntOrInf(false);
-        return new IntOrInf(left.value+right.value);
+        return new IntOrInf(left.value + right.value);
     }
 
     static class IntOrInf {
 
-
         Integer value;
         boolean isPlusInf;
+
         IntOrInf(int value) {
             this.value = Integer.valueOf(value);
             this.isPlusInf = false;
         }
+
         IntOrInf(boolean isPlusInf) {
             this.isPlusInf = isPlusInf;
             this.value = null;
         }
+
         boolean isMinusInf() {
-            return value==null && !isPlusInf;
+            return value == null && !isPlusInf;
         }
+
         boolean isPlusInf() {
-            return value==null && isPlusInf;
+            return value == null && isPlusInf;
         }
 
         public boolean lessOrEqual(IntOrInf left) {
-            if(this.isMinusInf() || left.isPlusInf())
+            if (this.isMinusInf() || left.isPlusInf())
                 return true;
-            if(this.isPlusInf() || left.isMinusInf())
+            if (this.isPlusInf() || left.isMinusInf())
                 return false;
-            return this.value<=left.value;
+            return this.value <= left.value;
         }
 
         @Override
         public String toString() {
-            if(this.isPlusInf())
+            if (this.isPlusInf())
                 return "+inf";
-            if(isMinusInf())
+            if (isMinusInf())
                 return "-inf";
             return value.toString();
         }
 
         @Override
         public boolean equals(Object obj) {
-            if(obj instanceof IntOrInf) {
-                if(this.isPlusInf() && ((IntOrInf) obj).isPlusInf())
+            if (obj instanceof IntOrInf) {
+                if (this.isPlusInf() && ((IntOrInf) obj).isPlusInf())
                     return true;
-                if(this.isMinusInf() && ((IntOrInf) obj).isMinusInf())
+                if (this.isMinusInf() && ((IntOrInf) obj).isMinusInf())
                     return true;
-                if(this.value!=null && ((IntOrInf) obj).value!=null)
+                if (this.value != null && ((IntOrInf) obj).value != null)
                     return this.value.equals(((IntOrInf) obj).value);
             }
             return false;

@@ -26,25 +26,27 @@ import it.unive.lisa.util.representation.StructuredRepresentation;
 import java.util.Objects;
 
 /**
- * Basic interval operations can be found at https://en.wikipedia.org/wiki/Interval_arithmetic#Interval_operators
+ * Basic interval operations can be found at
+ * https://en.wikipedia.org/wiki/Interval_arithmetic#Interval_operators
  *
  * Lattice operators can be found in https://doi.org/10.1016/j.scico.2009.04.004
  */
 public class Interval
 		// instances of this class are lattice elements such that:
 		// - their state (fields) hold the information contained into a single
-		//   variable
+		// variable
 		// - they provide logic for the evaluation of expressions
 		implements BaseNonRelationalValueDomain<
-			// java requires this type parameter to have this class
-			// as type in fields/methods
-			Interval> {
+				// java requires this type parameter to have this class
+				// as type in fields/methods
+				Interval> {
 
 	public static final Interval ZERO = new Interval(IntInterval.ZERO);
 	public static final Interval TOP = new Interval(IntInterval.INFINITY);
 	public static final Interval BOTTOM = new Interval(MathNumber.NaN, MathNumber.NaN);
 
-	// the abstract information carried by this instance is an interval for a single variable
+	// the abstract information carried by this instance is an interval for a single
+	// variable
 	public final IntInterval interval;
 
 	public Interval(

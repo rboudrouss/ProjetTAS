@@ -21,7 +21,7 @@ import java.util.Objects;
 public class Signs
 		// instances of this class are lattice elements such that:
 		// - their state (fields) hold the information contained into a single
-		//   variable
+		// variable
 		// - they provide logic for the evaluation of expressions
 		implements
 		BaseNonRelationalValueDomain<

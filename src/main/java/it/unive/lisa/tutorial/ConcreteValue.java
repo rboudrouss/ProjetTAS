@@ -33,11 +33,10 @@ public class ConcreteValue implements BaseNonRelationalValueDomain<ConcreteValue
 
     private ConcreteValue(boolean isTop) {
         this.value = 0;
-        if(isTop) {
+        if (isTop) {
             this.isBottom = false;
             this.isTop = true;
-        }
-        else {
+        } else {
             this.isBottom = true;
             this.isTop = false;
         }
@@ -45,33 +44,34 @@ public class ConcreteValue implements BaseNonRelationalValueDomain<ConcreteValue
 
     @Override
     public ConcreteValue lubAux(ConcreteValue concreteValue) throws SemanticException {
-        if(this.isTop() || concreteValue.isTop())
+        if (this.isTop() || concreteValue.isTop())
             return top();
-        if(this.isBottom)
+        if (this.isBottom)
             return concreteValue;
-        if(concreteValue.isBottom)
+        if (concreteValue.isBottom)
             return this;
-        if(this.value==concreteValue.value)
+        if (this.value == concreteValue.value)
             return this;
         return top();
     }
 
     @Override
     public boolean lessOrEqualAux(ConcreteValue concreteValue) throws SemanticException {
-        if(concreteValue.isTop)
+        if (concreteValue.isTop)
             return true;
-        if(concreteValue.isBottom)
+        if (concreteValue.isBottom)
             return this.isBottom;
-        if(this.isTop)
+        if (this.isTop)
             return false;
-        if(this.isBottom)
+        if (this.isBottom)
             return true;
         return this.value == concreteValue.value;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof ConcreteValue that)) return false;
+        if (!(o instanceof ConcreteValue that))
+            return false;
         return value == that.value && isBottom == that.isBottom && isTop == that.isTop;
     }
 
@@ -82,9 +82,9 @@ public class ConcreteValue implements BaseNonRelationalValueDomain<ConcreteValue
 
     @Override
     public String toString() {
-        if(isTop)
+        if (isTop)
             return "top";
-        if(isBottom)
+        if (isBottom)
             return "bottom";
         return String.valueOf(value);
     }
@@ -105,41 +105,43 @@ public class ConcreteValue implements BaseNonRelationalValueDomain<ConcreteValue
     }
 
     @Override
-    public ConcreteValue evalNonNullConstant(Constant constant, ProgramPoint pp, SemanticOracle oracle) throws SemanticException {
+    public ConcreteValue evalNonNullConstant(Constant constant, ProgramPoint pp, SemanticOracle oracle)
+            throws SemanticException {
         Object a = constant.getValue();
-        if(a instanceof Integer) {
+        if (a instanceof Integer) {
             return new ConcreteValue((Integer) a);
         }
         return BaseNonRelationalValueDomain.super.evalNonNullConstant(constant, pp, oracle);
     }
 
     @Override
-    public ConcreteValue evalBinaryExpression(BinaryOperator operator, ConcreteValue left, ConcreteValue right, ProgramPoint pp, SemanticOracle oracle) throws SemanticException {
-        if(operator instanceof AdditionOperator) {
-            if(left.isBottom() || right.isBottom())
+    public ConcreteValue evalBinaryExpression(BinaryOperator operator, ConcreteValue left, ConcreteValue right,
+            ProgramPoint pp, SemanticOracle oracle) throws SemanticException {
+        if (operator instanceof AdditionOperator) {
+            if (left.isBottom() || right.isBottom())
                 return this.bottom();
-            if(left.isTop() || right.isTop())
+            if (left.isTop() || right.isTop())
                 return this.top();
             return new ConcreteValue(left.value + right.value);
         }
-        if(operator instanceof SubtractionOperator) {
-            if(left.isBottom() || right.isBottom())
+        if (operator instanceof SubtractionOperator) {
+            if (left.isBottom() || right.isBottom())
                 return this.bottom();
-            if(left.isTop() || right.isTop())
+            if (left.isTop() || right.isTop())
                 return this.top();
             return new ConcreteValue(left.value - right.value);
         }
-        if(operator instanceof MultiplicationOperator) {
-            if(left.isBottom() || right.isBottom())
+        if (operator instanceof MultiplicationOperator) {
+            if (left.isBottom() || right.isBottom())
                 return this.bottom();
-            if(left.isTop() || right.isTop())
+            if (left.isTop() || right.isTop())
                 return this.top();
             return new ConcreteValue(left.value * right.value);
         }
-        if(operator instanceof DivisionOperator) {
-            if(left.isBottom() || right.isBottom())
+        if (operator instanceof DivisionOperator) {
+            if (left.isBottom() || right.isBottom())
                 return this.bottom();
-            if(left.isTop() || right.isTop())
+            if (left.isTop() || right.isTop())
                 return this.top();
             return new ConcreteValue(left.value / right.value);
         }

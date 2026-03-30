@@ -22,7 +22,7 @@ import java.util.Objects;
 public class Taint
 		// instances of this class are lattice elements such that:
 		// - their state (fields) hold the information contained into a single
-		//   variable
+		// variable
 		// - they provide logic for the evaluation of expressions
 		implements
 		BaseNonRelationalValueDomain<
@@ -36,18 +36,22 @@ public class Taint
 	public static final Annotation TAINTED_ANNOTATION = new Annotation("lisa.taint.Tainted");
 
 	/**
-	 * The annotation used to mark clean variables, that is, sanitizers of tainted information.
+	 * The annotation used to mark clean variables, that is, sanitizers of tainted
+	 * information.
 	 */
 	public static final Annotation CLEAN_ANNOTATION = new Annotation("lisa.taint.Clean");
 
 	/**
-	 * An {@link AnnotationMatcher} for {@link #TAINTED_ANNOTATION}. Annotation matchers are just utility objects that
-	 * 	 * allow for conditional matching of annotations based on names, parameters, ...
+	 * An {@link AnnotationMatcher} for {@link #TAINTED_ANNOTATION}. Annotation
+	 * matchers are just utility objects that
+	 * * allow for conditional matching of annotations based on names, parameters,
+	 * ...
 	 */
 	public static final AnnotationMatcher TAINTED_MATCHER = new BasicAnnotationMatcher(TAINTED_ANNOTATION);
 
 	/**
-	 * An {@link AnnotationMatcher} for {@link #CLEAN_ANNOTATION}. Annotation matchers are just utility objects that
+	 * An {@link AnnotationMatcher} for {@link #CLEAN_ANNOTATION}. Annotation
+	 * matchers are just utility objects that
 	 * allow for conditional matching of annotations based on names, parameters, ...
 	 */
 	public static final AnnotationMatcher CLEAN_MATCHER = new BasicAnnotationMatcher(CLEAN_ANNOTATION);
@@ -86,7 +90,9 @@ public class Taint
 	}
 
 	@Override
-	public int hashCode() { return Objects.hashCode(taint);	}
+	public int hashCode() {
+		return Objects.hashCode(taint);
+	}
 
 	@Override
 	public Taint top() {

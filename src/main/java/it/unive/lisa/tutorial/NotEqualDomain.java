@@ -79,7 +79,8 @@ public class NotEqualDomain extends FunctionalLattice<NotEqualDomain, Identifier
     }
 
     @Override
-    public NotEqualDomain smallStepSemantics(ValueExpression expression, ProgramPoint pp, SemanticOracle oracle) throws SemanticException {
+    public NotEqualDomain smallStepSemantics(ValueExpression expression, ProgramPoint pp, SemanticOracle oracle)
+            throws SemanticException {
         return this;
     }
 
@@ -127,7 +128,7 @@ public class NotEqualDomain extends FunctionalLattice<NotEqualDomain, Identifier
         if(this.isTop())
             return this;
         NotEqualDomain ret = this;
-        if(this.function.containsKey(id)) {
+        if (this.function.containsKey(id)) {
             ret = ret.putState(id, lattice.top());
         }
         for(Identifier i : this.function.keySet()) {
@@ -190,6 +191,5 @@ public class NotEqualDomain extends FunctionalLattice<NotEqualDomain, Identifier
             return new SetOfIdentifiers(Collections.emptySet(), false);
         }
     }
-
 
 }

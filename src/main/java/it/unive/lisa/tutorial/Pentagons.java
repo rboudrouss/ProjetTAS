@@ -21,11 +21,13 @@ import java.util.Map.Entry;
 import java.util.function.Predicate;
 
 /**
- * Implementation of the pentagons analysis of https://doi.org/10.1016/j.scico.2009.04.004
+ * Implementation of the pentagons analysis of
+ * https://doi.org/10.1016/j.scico.2009.04.004
  */
 public class Pentagons
 		// instances of this class are lattice elements such that:
-		// - their state (fields) hold the information contained into a whole program state
+		// - their state (fields) hold the information contained into a whole program
+		// state
 		// - they provide logic for the evaluation of expressions
 		implements ValueDomain<Pentagons>,
 		// we exploit BaseLattice to avoid writing common-sense logic
@@ -53,17 +55,21 @@ public class Pentagons
 
 	@Override
 	public boolean isTop() {
-		// since top() does not return a constant value, we have to override this method as well
+		// since top() does not return a constant value, we have to override this method
+		// as well
 		// providing the logic for identifying the top element
 		return upperbounds.isTop() && intervals.isTop();
 	}
 
 	@Override
-	public Pentagons bottom() {	return new Pentagons(upperbounds.bottom(), intervals.bottom());	}
+	public Pentagons bottom() {
+		return new Pentagons(upperbounds.bottom(), intervals.bottom());
+	}
 
 	@Override
 	public boolean isBottom() {
-		// since bottom() does not return a constant value, we have to override this method as well
+		// since bottom() does not return a constant value, we have to override this
+		// method as well
 		// providing the logic for identifying the bottom element
 		return upperbounds.isBottom() && intervals.isBottom();
 	}
@@ -205,7 +211,7 @@ public class Pentagons
 				upperbounds.assume(expression, src, dest, oracle),
 				intervals.assume(expression, src, dest, oracle));
 	}
-	
+
 	@Override
 	public Pentagons forgetIdentifier(
 			Identifier id)

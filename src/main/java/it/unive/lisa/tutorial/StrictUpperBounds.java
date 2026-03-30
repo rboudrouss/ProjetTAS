@@ -19,14 +19,17 @@ import it.unive.lisa.symbolic.value.operator.binary.*;
 import java.util.*;
 
 /**
- * Relational implementation of the upper bounds analysis of https://doi.org/10.1016/j.scico.2009.04.004
+ * Relational implementation of the upper bounds analysis of
+ * https://doi.org/10.1016/j.scico.2009.04.004
  */
 public class StrictUpperBounds
 		// instances of this class are lattice elements such that:
 		// - their state (fields) hold the information for all variables
-		// - they provide logic for the evaluation of statements, traversing conditions, ...
+		// - they provide logic for the evaluation of statements, traversing conditions,
+		// ...
 		extends
-		// we reuse the value environment to simplify our implementation, but to do this we
+		// we reuse the value environment to simplify our implementation, but to do this
+		// we
 		// have to make IdSet an NRVD even if we do not need it
 		Environment<StrictUpperBounds, ValueExpression, StrictUpperBounds.IdSet>
 		// we make explicit that this is a value domain
@@ -65,7 +68,8 @@ public class StrictUpperBounds
 			ValueExpression expression,
 			ProgramPoint pp,
 			SemanticOracle oracle) throws SemanticException {
-		// cleanup: if a variable is reassigned, it can no longer be an upperbound of other variables
+		// cleanup: if a variable is reassigned, it can no longer be an upperbound of
+		// other variables
 		Map<Identifier, IdSet> cleanup = new HashMap<>();
 		for (Map.Entry<Identifier, IdSet> entry : this) {
 			if (entry.getKey().equals(id))
@@ -213,14 +217,17 @@ public class StrictUpperBounds
 	public static class IdSet
 			// instances of this class are lattice elements such that:
 			// - their state (fields) hold the information contained into a single
-			//   variable
+			// variable
 			extends
-			// the inverse set lattice is a lattice implementation provided by LiSA that uses:
-			// - sets of elements as the abstract information carried by each lattice instance
+			// the inverse set lattice is a lattice implementation provided by LiSA that
+			// uses:
+			// - sets of elements as the abstract information carried by each lattice
+			// instance
 			// - superset inclusion as partial order
 			// - set intersection as lub
 			// - set union as glb
-			// this makes it so the less information you have, the more you are close to the top element
+			// this makes it so the less information you have, the more you are close to the
+			// top element
 			InverseSetLattice<IdSet, Identifier>
 			// this is a hack: we do not need the NRVD structure here, but we use it to
 			// plug this class inside environments
@@ -240,7 +247,8 @@ public class StrictUpperBounds
 		 * Builds the lattice.
 		 *
 		 * @param elements the elements that are contained in the lattice
-		 * @param isTop    whether or not this is the top or bottom element of the lattice, valid only if the set of
+		 * @param isTop    whether or not this is the top or bottom element of the
+		 *                 lattice, valid only if the set of
 		 *                 elements is empty
 		 */
 		public IdSet(
