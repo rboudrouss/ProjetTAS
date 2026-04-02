@@ -18,7 +18,8 @@ import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 
-public class NotEqualDomain extends FunctionalLattice<NotEqualDomain, Identifier, NotEqualDomain.SetOfIdentifiers> implements ValueDomain<NotEqualDomain> {
+public class NotEqualDomain extends FunctionalLattice<NotEqualDomain, Identifier, NotEqualDomain.SetOfIdentifiers>
+        implements ValueDomain<NotEqualDomain> {
     public NotEqualDomain() {
         super(new SetOfIdentifiers(Collections.emptySet(), true));
     }
@@ -48,20 +49,21 @@ public class NotEqualDomain extends FunctionalLattice<NotEqualDomain, Identifier
     }
 
     @Override
-    public NotEqualDomain assign(Identifier id, ValueExpression expression, ProgramPoint pp, SemanticOracle oracle) throws SemanticException {
-        NotEqualDomain result =  this.forgetIdentifier(id);
-        if(expression instanceof BinaryExpression) {
+    public NotEqualDomain assign(Identifier id, ValueExpression expression, ProgramPoint pp, SemanticOracle oracle)
+            throws SemanticException {
+        NotEqualDomain result = this.forgetIdentifier(id);
+        if (expression instanceof BinaryExpression) {
             BinaryExpression bin = (BinaryExpression) expression;
-            it.unive.lisa.symbolic.value.operator.binary.BinaryOperator op
-                    = bin.getOperator();
-            if(op instanceof AdditionOperator || op instanceof SubtractionOperator) {
-                if(bin.getLeft() instanceof Identifier && bin.getRight() instanceof Constant) {
+            it.unive.lisa.symbolic.value.operator.binary.BinaryOperator op = bin.getOperator();
+            if (op instanceof AdditionOperator || op instanceof SubtractionOperator) {
+                if (bin.getLeft() instanceof Identifier && bin.getRight() instanceof Constant) {
                     Constant c = (Constant) bin.getRight();
-                    if(c.getValue() instanceof Integer && ((Integer) c.getValue()) != 0) {
-                        if( ! id.equals(bin.getLeft())) {
-                            result = result.putState(id, new SetOfIdentifiers(Collections.singleton((Identifier) bin.getLeft()), false));
+                    if (c.getValue() instanceof Integer && ((Integer) c.getValue()) != 0) {
+                        if (!id.equals(bin.getLeft())) {
+                            result = result.putState(id,
+                                    new SetOfIdentifiers(Collections.singleton((Identifier) bin.getLeft()), false));
                             SetOfIdentifiers value = result.getState((Identifier) bin.getLeft());
-                            if(value.isTop())
+                            if (value.isTop())
                                 value = new SetOfIdentifiers(Collections.singleton(id), true);
                             else {
                                 Set<Identifier> val = new HashSet<>(value.elements);
@@ -85,16 +87,18 @@ public class NotEqualDomain extends FunctionalLattice<NotEqualDomain, Identifier
     }
 
     @Override
-    public NotEqualDomain assume(ValueExpression expression, ProgramPoint src, ProgramPoint dest, SemanticOracle oracle) throws SemanticException {
+    public NotEqualDomain assume(ValueExpression expression, ProgramPoint src, ProgramPoint dest, SemanticOracle oracle)
+            throws SemanticException {
         NotEqualDomain ret = this;
-        if(expression instanceof BinaryExpression) {
+        if (expression instanceof BinaryExpression) {
             BinaryExpression bin = (BinaryExpression) expression;
             Operator op = bin.getOperator();
-            if(op instanceof ComparisonNe && bin.getLeft() instanceof Identifier && bin.getRight() instanceof Identifier) {
+            if (op instanceof ComparisonNe && bin.getLeft() instanceof Identifier
+                    && bin.getRight() instanceof Identifier) {
                 Identifier left = (Identifier) bin.getLeft();
                 Identifier right = (Identifier) bin.getRight();
                 SetOfIdentifiers value = ret.getState((Identifier) bin.getLeft());
-                if(value.isTop())
+                if (value.isTop())
                     value = new SetOfIdentifiers(Collections.singleton(right), true);
                 else {
                     Set<Identifier> val = new HashSet<>(value.elements);
@@ -104,7 +108,7 @@ public class NotEqualDomain extends FunctionalLattice<NotEqualDomain, Identifier
                 ret = ret.putState((Identifier) bin.getLeft(), value);
 
                 value = ret.getState((Identifier) bin.getRight());
-                if(value.isTop())
+                if (value.isTop())
                     value = new SetOfIdentifiers(Collections.singleton(left), true);
                 else {
                     Set<Identifier> val = new HashSet<>(value.elements);
@@ -125,20 +129,20 @@ public class NotEqualDomain extends FunctionalLattice<NotEqualDomain, Identifier
 
     @Override
     public NotEqualDomain forgetIdentifier(Identifier id) throws SemanticException {
-        if(this.isTop())
+        if (this.isTop())
             return this;
         NotEqualDomain ret = this;
         if (this.function.containsKey(id)) {
             ret = ret.putState(id, lattice.top());
         }
-        for(Identifier i : this.function.keySet()) {
-            if(this.function.get(i).contains(id)) {
+        for (Identifier i : this.function.keySet()) {
+            if (this.function.get(i).contains(id)) {
                 Set<Identifier> value = new HashSet<>(this.getState(i).elements);
                 value.remove(id);
                 ret = ret.putState(i, new SetOfIdentifiers(value, value.isEmpty()));
             }
         }
-        //TODO remove from all the codomain values
+        // TODO remove from all the codomain values
         return ret;
     }
 
@@ -148,10 +152,12 @@ public class NotEqualDomain extends FunctionalLattice<NotEqualDomain, Identifier
     }
 
     @Override
-    public Satisfiability satisfies(ValueExpression expression, ProgramPoint pp, SemanticOracle oracle) throws SemanticException {
-        if(this.isBottom())
+    public Satisfiability satisfies(ValueExpression expression, ProgramPoint pp, SemanticOracle oracle)
+            throws SemanticException {
+        if (this.isBottom())
             return Satisfiability.BOTTOM;
-        else return Satisfiability.UNKNOWN;
+        else
+            return Satisfiability.UNKNOWN;
     }
 
     @Override
