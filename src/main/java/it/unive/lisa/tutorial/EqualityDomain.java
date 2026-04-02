@@ -15,9 +15,9 @@ import it.unive.lisa.analysis.value.ValueDomain;
 import it.unive.lisa.program.cfg.ProgramPoint;
 import it.unive.lisa.symbolic.value.Identifier;
 import it.unive.lisa.symbolic.value.ValueExpression;
-import it.unive.lisa.util.representation.StructuredRepresentation;
 
-public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier, EqualityDomain.SetOfIdentifiers> implements ValueDomain<EqualityDomain> {
+public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier, EqualityDomain.SetOfIdentifiers>
+        implements ValueDomain<EqualityDomain> {
 
     public EqualityDomain(SetOfIdentifiers lattice) {
         super(lattice);
@@ -29,7 +29,7 @@ public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier
 
     @Override
     public SetOfIdentifiers stateOfUnknown(Identifier key) {
-        // for an unknown variable, assume no equalities: top of SetOfIdentifiers
+        // for an unknown variable, assume no equalities top of SetOfIdentifiers
         return new SetOfIdentifiers(Collections.emptySet(), true);
     }
 
@@ -39,8 +39,10 @@ public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier
     }
 
     // Tracks, for each variable, the set of variables known to be equal to it.
-    // InverseSetLattice: more elements = more equalities known = more precise = lower in lattice.
-    // lub (join at merge) = intersection: keep only equalities that hold in BOTH branches.
+    // InverseSetLattice: more elements = more equalities known = more precise =
+    // lower in lattice.
+    // lub (join at merge) = intersection: keep only equalities that hold in BOTH
+    // branches.
     static class SetOfIdentifiers extends InverseSetLattice<SetOfIdentifiers, Identifier> {
 
         public SetOfIdentifiers(Set<Identifier> elements, boolean isTop) {
@@ -49,19 +51,18 @@ public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier
 
         @Override
         public SetOfIdentifiers mk(Set<Identifier> set) {
-            // isTop = true only when the set is empty and represents the top element
             return new SetOfIdentifiers(set, set.isEmpty());
         }
 
         @Override
         public SetOfIdentifiers top() {
-            // top = empty set with isTop=true: no equality constraints known
+            // top = empty set with isTop=true no equality constraints known
             return new SetOfIdentifiers(Collections.emptySet(), true);
         }
 
         @Override
         public SetOfIdentifiers bottom() {
-            // bottom = empty set with isTop=false: unreachable / contradiction
+            // bottom = empty set with isTop=false. unreachable
             return new SetOfIdentifiers(Collections.emptySet(), false);
         }
     }
@@ -138,14 +139,12 @@ public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier
 
     @Override
     public EqualityDomain top() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'top'");
+        return new EqualityDomain(lattice.top());
     }
 
     @Override
     public EqualityDomain bottom() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'bottom'");
+        return new EqualityDomain(lattice.bottom());
     }
 
 }
