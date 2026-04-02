@@ -19,11 +19,11 @@ import it.unive.lisa.symbolic.value.ValueExpression;
 public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier, EqualityDomain.SetOfIdentifiers>
         implements ValueDomain<EqualityDomain> {
 
-    public EqualityDomain(SetOfIdentifiers lattice) {
-        super(lattice);
+    public EqualityDomain() {
+        super(new SetOfIdentifiers(Collections.emptySet(), true));
     }
 
-    public EqualityDomain(SetOfIdentifiers lattice, Map<Identifier, SetOfIdentifiers> function) {
+    private EqualityDomain(SetOfIdentifiers lattice, Map<Identifier, SetOfIdentifiers> function) {
         super(lattice, function);
     }
 
@@ -77,8 +77,7 @@ public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier
     @Override
     public EqualityDomain smallStepSemantics(ValueExpression expression, ProgramPoint pp, SemanticOracle oracle)
             throws SemanticException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'smallStepSemantics'");
+        return this;
     }
 
     @Override
@@ -90,8 +89,7 @@ public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier
 
     @Override
     public boolean knowsIdentifier(Identifier id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'knowsIdentifier'");
+        return function != null && function.containsKey(id);
     }
 
     @Override
@@ -115,36 +113,22 @@ public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier
 
     @Override
     public EqualityDomain pushScope(ScopeToken token) throws SemanticException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'pushScope'");
+        return this;
     }
 
     @Override
     public EqualityDomain popScope(ScopeToken token) throws SemanticException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'popScope'");
-    }
-
-    @Override
-    public boolean lessOrEqual(EqualityDomain other) throws SemanticException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'lessOrEqual'");
-    }
-
-    @Override
-    public EqualityDomain lub(EqualityDomain other) throws SemanticException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'lub'");
+        return this;
     }
 
     @Override
     public EqualityDomain top() {
-        return new EqualityDomain(lattice.top());
+        return new EqualityDomain(lattice.top(), null);
     }
 
     @Override
     public EqualityDomain bottom() {
-        return new EqualityDomain(lattice.bottom());
+        return new EqualityDomain(lattice.bottom(), null);
     }
 
 }
