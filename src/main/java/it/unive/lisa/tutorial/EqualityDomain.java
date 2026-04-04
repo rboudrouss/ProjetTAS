@@ -195,9 +195,11 @@ public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier
         return new EqualityDomain(lattice.bottom(), null);
     }
 
-
-    // without transitivity, when we learn that x == y, we add y to x set and x to y set, but we do not add to x set all the variables that are equal to y, and vice versa.
-    public EqualityDomain assumeWorking(ValueExpression expression, ProgramPoint src, ProgramPoint dest, SemanticOracle oracle)
+    // without transitivity, when we learn that x == y, we add y to x set and x to y
+    // set, but we do not add to x set all the variables that are equal to y, and
+    // vice versa.
+    public EqualityDomain assumeWorking(ValueExpression expression, ProgramPoint src, ProgramPoint dest,
+            SemanticOracle oracle)
             throws SemanticException {
         if (!(expression instanceof BinaryExpression))
             return this;
