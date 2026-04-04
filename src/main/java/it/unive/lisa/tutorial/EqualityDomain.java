@@ -14,8 +14,10 @@ import it.unive.lisa.analysis.lattices.InverseSetLattice;
 import it.unive.lisa.analysis.lattices.Satisfiability;
 import it.unive.lisa.analysis.value.ValueDomain;
 import it.unive.lisa.program.cfg.ProgramPoint;
+import it.unive.lisa.symbolic.value.BinaryExpression;
 import it.unive.lisa.symbolic.value.Identifier;
 import it.unive.lisa.symbolic.value.ValueExpression;
+import it.unive.lisa.symbolic.value.operator.binary.ComparisonEq;
 
 public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier, EqualityDomain.SetOfIdentifiers>
         implements ValueDomain<EqualityDomain> {
@@ -84,8 +86,23 @@ public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier
     @Override
     public EqualityDomain assume(ValueExpression expression, ProgramPoint src, ProgramPoint dest, SemanticOracle oracle)
             throws SemanticException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'assume'");
+        if (!(expression instanceof BinaryExpression))
+            return this;
+        BinaryExpression bin = (BinaryExpression) expression;
+        if (!(bin.getOperator() instanceof ComparisonEq))
+            return this;
+        if (!(bin.getLeft() instanceof Identifier) || !(bin.getRight() instanceof Identifier))
+            return this;
+        Identifier left = (Identifier) bin.getLeft();
+        Identifier right = (Identifier) bin.getRight();
+        EqualityDomain ret = this;
+        Set<Identifier> leftSet = new HashSet<>(ret.getState(left).elements);
+        leftSet.add(right);
+        ret = ret.putState(left, new SetOfIdentifiers(leftSet, false));
+        Set<Identifier> rightSet = new HashSet<>(ret.getState(right).elements);
+        rightSet.add(left);
+        ret = ret.putState(right, new SetOfIdentifiers(rightSet, false));
+        return ret;
     }
 
     @Override
