@@ -74,8 +74,20 @@ public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier
     @Override
     public EqualityDomain assign(Identifier id, ValueExpression expression, ProgramPoint pp, SemanticOracle oracle)
             throws SemanticException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'assign'");
+        EqualityDomain ret = forgetIdentifier(id);
+        if (!(expression instanceof Identifier))
+            return ret;
+        Identifier rhs = (Identifier) expression;
+        Set<Identifier> merged = new HashSet<>();
+        merged.add(id);
+        merged.add(rhs);
+        merged.addAll(ret.getState(rhs).elements);
+        for (Identifier z : merged) {
+            Set<Identifier> zSet = new HashSet<>(merged);
+            zSet.remove(z);
+            ret = ret.putState(z, new SetOfIdentifiers(zSet, false));
+        }
+        return ret;
     }
 
     @Override
