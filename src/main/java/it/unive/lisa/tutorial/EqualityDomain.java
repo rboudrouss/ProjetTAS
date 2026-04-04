@@ -112,8 +112,13 @@ public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier
 
     @Override
     public EqualityDomain forgetIdentifiersIf(Predicate<Identifier> test) throws SemanticException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'forgetIdentifiersIf'");
+        if (isTop() || isBottom() || function == null)
+            return this;
+        EqualityDomain ret = this;
+        for (Identifier id : function.keySet())
+            if (test.test(id))
+                ret = ret.forgetIdentifier(id);
+        return ret;
     }
 
     @Override
