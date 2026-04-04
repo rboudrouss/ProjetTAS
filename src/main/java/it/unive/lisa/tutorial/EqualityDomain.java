@@ -95,13 +95,17 @@ public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier
             return this;
         Identifier left = (Identifier) bin.getLeft();
         Identifier right = (Identifier) bin.getRight();
+        Set<Identifier> merged = new HashSet<>();
+        merged.add(left);
+        merged.addAll(getState(left).elements);
+        merged.add(right);
+        merged.addAll(getState(right).elements);
         EqualityDomain ret = this;
-        Set<Identifier> leftSet = new HashSet<>(ret.getState(left).elements);
-        leftSet.add(right);
-        ret = ret.putState(left, new SetOfIdentifiers(leftSet, false));
-        Set<Identifier> rightSet = new HashSet<>(ret.getState(right).elements);
-        rightSet.add(left);
-        ret = ret.putState(right, new SetOfIdentifiers(rightSet, false));
+        for (Identifier z : merged) {
+            Set<Identifier> zSet = new HashSet<>(merged);
+            zSet.remove(z);
+            ret = ret.putState(z, new SetOfIdentifiers(zSet, false));
+        }
         return ret;
     }
 
@@ -165,4 +169,26 @@ public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier
         return new EqualityDomain(lattice.bottom(), null);
     }
 
+
+    // without transitivity, when we learn that x == y, we add y to x set and x to y set, but we do not add to x set all the variables that are equal to y, and vice versa.
+    public EqualityDomain assumeWorking(ValueExpression expression, ProgramPoint src, ProgramPoint dest, SemanticOracle oracle)
+            throws SemanticException {
+        if (!(expression instanceof BinaryExpression))
+            return this;
+        BinaryExpression bin = (BinaryExpression) expression;
+        if (!(bin.getOperator() instanceof ComparisonEq))
+            return this;
+        if (!(bin.getLeft() instanceof Identifier) || !(bin.getRight() instanceof Identifier))
+            return this;
+        Identifier left = (Identifier) bin.getLeft();
+        Identifier right = (Identifier) bin.getRight();
+        EqualityDomain ret = this;
+        Set<Identifier> leftSet = new HashSet<>(ret.getState(left).elements);
+        leftSet.add(right);
+        ret = ret.putState(left, new SetOfIdentifiers(leftSet, false));
+        Set<Identifier> rightSet = new HashSet<>(ret.getState(right).elements);
+        rightSet.add(left);
+        ret = ret.putState(right, new SetOfIdentifiers(rightSet, false));
+        return ret;
+    }
 }
