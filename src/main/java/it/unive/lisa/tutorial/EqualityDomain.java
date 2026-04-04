@@ -18,6 +18,7 @@ import it.unive.lisa.symbolic.value.BinaryExpression;
 import it.unive.lisa.symbolic.value.Identifier;
 import it.unive.lisa.symbolic.value.ValueExpression;
 import it.unive.lisa.symbolic.value.operator.binary.ComparisonEq;
+import it.unive.lisa.symbolic.value.operator.binary.ComparisonNe;
 
 public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier, EqualityDomain.SetOfIdentifiers>
         implements ValueDomain<EqualityDomain> {
@@ -145,8 +146,21 @@ public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier
     @Override
     public Satisfiability satisfies(ValueExpression expression, ProgramPoint pp, SemanticOracle oracle)
             throws SemanticException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'satisfies'");
+        if (isBottom())
+            return Satisfiability.BOTTOM;
+        if (!(expression instanceof BinaryExpression))
+            return Satisfiability.UNKNOWN;
+        BinaryExpression bin = (BinaryExpression) expression;
+        if (!(bin.getLeft() instanceof Identifier) || !(bin.getRight() instanceof Identifier))
+            return Satisfiability.UNKNOWN;
+        Identifier left = (Identifier) bin.getLeft();
+        Identifier right = (Identifier) bin.getRight();
+        boolean knownEqual = getState(left).elements.contains(right);
+        if (bin.getOperator() instanceof ComparisonEq)
+            return knownEqual ? Satisfiability.SATISFIED : Satisfiability.UNKNOWN;
+        if (bin.getOperator() instanceof ComparisonNe)
+            return knownEqual ? Satisfiability.NOT_SATISFIED : Satisfiability.UNKNOWN;
+        return Satisfiability.UNKNOWN;
     }
 
     @Override
