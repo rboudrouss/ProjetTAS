@@ -1,6 +1,7 @@
 package it.unive.lisa.tutorial;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -94,8 +95,19 @@ public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier
 
     @Override
     public EqualityDomain forgetIdentifier(Identifier id) throws SemanticException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'forgetIdentifier'");
+        if (isTop() || isBottom() || function == null)
+            return this;
+        EqualityDomain ret = this;
+        if (function.containsKey(id))
+            ret = ret.putState(id, lattice.top());
+        for (Identifier i : function.keySet()) {
+            if (function.get(i).contains(id)) {
+                Set<Identifier> updated = new HashSet<>(this.getState(i).elements);
+                updated.remove(id);
+                ret = ret.putState(i, new SetOfIdentifiers(updated, updated.isEmpty()));
+            }
+        }
+        return ret;
     }
 
     @Override
