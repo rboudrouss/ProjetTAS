@@ -1,15 +1,16 @@
-# LiSA tutorials — TAS 2026 Project
+# LiSA tutorials TAS 2026 Project
+
+AUTHORS :
+
+- BOUDROUSS Réda
 
 ## Project : Implémentation de domaines abstraits
 
 ### Domaines implémentés
 
----
-
 #### 1. KarrDomain (relationnel)
 
 **Classe** : `KarrDomain.java`  
-**Pattern** : `implements ValueDomain<KarrDomain>, BaseLattice<KarrDomain>`
 
 Domaine des égalités affines de Karr. Un élément abstrait représente l'ensemble des valuations satisfaisant un système d'équations :
 
@@ -74,7 +75,6 @@ L'algèbre linéaire est effectuée en double précision (`double`), avec seuil 
 #### 2. SetOfFloatValuesWithOverflow (non-relationnel)
 
 **Classe** : `SetOfFloatValuesWithOverflow.java`  
-**Pattern** : `implements BaseNonRelationalValueDomain<SetOfFloatValuesWithOverflow>`
 
 Ensemble fini de valeurs `float` concrètes possibles pour une variable.
 
@@ -105,7 +105,6 @@ En Java, la division flottante par zéro ne lève pas d'exception : IEEE 754 dé
 L'assume filtre l'ensemble des valeurs selon la contrainte. Le flag `leftIsId` distingue `x < 3` de `3 < x`. Quand l'état est `⊤`, seul `==` produit un raffinement (vers un singleton). Les autres opérateurs laissent l'état inchangé.
 
 #### 3. EqualityDomain (hors-sujet)
-
 
 > Ce domaine a été implémenté en bonus (par erreur dans un premier temps).
 
