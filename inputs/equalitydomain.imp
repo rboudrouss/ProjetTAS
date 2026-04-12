@@ -1,0 +1,31 @@
+class equalitydomain {
+	basic(a) {
+	    def x = a;
+	    def y = x;
+	    def z = y;
+	}
+
+	assume_eq(a, b) {
+	    def x = a;
+	    def y = b;
+	    if (x == y) {
+	        def z = x;
+	    }
+	}
+
+	reassign(a) {
+	    def x = a;
+	    def y = x;
+	    x = 0;
+	    def z = y;
+	}
+
+	loop(a, b) {
+	    def x = a;
+	    def y = b;
+	    while (x == y) {
+	        x = y;
+	        y = a;
+	    }
+	}
+}
