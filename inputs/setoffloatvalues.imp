@@ -1,0 +1,53 @@
+class setoffloatvalues {
+	basic() {
+		def i = 2;
+		def j = -3;
+		def a = i + j;
+		def s = i - j;
+		def m = i * j;
+		def d = i / j;
+	}
+
+	branches(a) {
+	    def x = 1;
+	    def y = 2;
+	    if(a > 0)
+	        x = 3;
+	    else y = 4;
+	    def z = x + y;
+	    def k = x * y;
+	}
+
+	complex_branches(a) {
+	    def x = 10;
+	    def y = 20;
+	    def z = 30;
+	    if(a > 0) {
+	        x = -10;
+	        y = 10;
+	        z = 25;
+	    }
+	    else {
+	        y = 0;
+	        x = 0;
+	        z = 0;
+	    }
+	    def q = x + y;
+	    def k = q - z;
+	    q = x * y;
+	    k = q + z;
+	}
+
+	divbyzero() {
+	    def x = 10;
+	    def y = 0;
+	    def z = x / y;
+	}
+
+	loop(a) {
+	    def i = 0;
+	    while(i < a) {
+	        i = i + 1;
+	    }
+	}
+}
