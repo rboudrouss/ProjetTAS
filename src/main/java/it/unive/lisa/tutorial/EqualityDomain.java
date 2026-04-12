@@ -42,11 +42,6 @@ public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier
         return new EqualityDomain(lattice, function);
     }
 
-    // Tracks, for each variable, the set of variables known to be equal to it.
-    // InverseSetLattice: more elements = more equalities known = more precise =
-    // lower in lattice.
-    // lub (join at merge) = intersection: keep only equalities that hold in BOTH
-    // branches.
     static class SetOfIdentifiers extends InverseSetLattice<SetOfIdentifiers, Identifier> {
 
         public SetOfIdentifiers(Set<Identifier> elements, boolean isTop) {
@@ -75,6 +70,7 @@ public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier
     @Override
     public EqualityDomain assign(Identifier id, ValueExpression expression, ProgramPoint pp, SemanticOracle oracle)
             throws SemanticException {
+        if (isBottom()) return this;
         EqualityDomain ret = forgetIdentifier(id);
         if (!(expression instanceof Identifier))
             return ret;
@@ -86,7 +82,7 @@ public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier
         for (Identifier z : merged) {
             Set<Identifier> zSet = new HashSet<>(merged);
             zSet.remove(z);
-            ret = ret.putState(z, new SetOfIdentifiers(zSet, false));
+            ret = ret.putState(z, new SetOfIdentifiers(zSet, zSet.isEmpty()));
         }
         return ret;
     }
@@ -100,6 +96,7 @@ public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier
     @Override
     public EqualityDomain assume(ValueExpression expression, ProgramPoint src, ProgramPoint dest, SemanticOracle oracle)
             throws SemanticException {
+        if (isBottom()) return this;
         if (!(expression instanceof BinaryExpression))
             return this;
         BinaryExpression bin = (BinaryExpression) expression;
@@ -118,7 +115,7 @@ public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier
         for (Identifier z : merged) {
             Set<Identifier> zSet = new HashSet<>(merged);
             zSet.remove(z);
-            ret = ret.putState(z, new SetOfIdentifiers(zSet, false));
+            ret = ret.putState(z, new SetOfIdentifiers(zSet, zSet.isEmpty()));
         }
         return ret;
     }
