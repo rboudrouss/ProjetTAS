@@ -22,12 +22,6 @@ public class ReducedCartesianProductSetFloatEquality
         return res.reduce();
     }
 
-    /**
-     * Reduction: if EqualityDomain knows x == y, then the float values of x
-     * must be consistent with those of y. We refine each variable's float
-     * abstraction to the intersection (glb) of all variables in its equality
-     * class.
-     */
     private ReducedCartesianProductSetFloatEquality reduce() {
         ValueEnvironment<SetOfFloatValuesWithOverflow> floatEnv = this.left;
         EqualityDomain equalityDomain = this.right;
