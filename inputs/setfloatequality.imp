@@ -1,0 +1,33 @@
+class setfloatequality {
+    basic() {
+        def x = 1;
+        def y = x;
+        def z = x + y;
+    }
+
+    branches(a) {
+        def x = 1;
+        def y = 2;
+        if (a > 0)
+            x = 3;
+        else y = 4;
+        def z = x + y;
+    }
+
+    equality_assume(a, b) {
+        def x = a;
+        def y = b;
+        if (x == y) {
+            def z = x + y;
+        }
+    }
+
+    loop(a) {
+        def x = 0;
+        def y = x;
+        while (x < a) {
+            x = x + 1;
+            y = x;
+        }
+    }
+}

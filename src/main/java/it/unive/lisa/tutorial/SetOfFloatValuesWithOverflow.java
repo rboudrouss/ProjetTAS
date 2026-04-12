@@ -75,6 +75,13 @@ public class SetOfFloatValuesWithOverflow
     }
 
     @Override
+    public SetOfFloatValuesWithOverflow glbAux(SetOfFloatValuesWithOverflow other) throws SemanticException {
+        Set<Float> intersection = new HashSet<>(this.values);
+        intersection.retainAll(other.values);
+        return intersection.isEmpty() ? BOTTOM : new SetOfFloatValuesWithOverflow(intersection);
+    }
+
+    @Override
     public SetOfFloatValuesWithOverflow lubAux(SetOfFloatValuesWithOverflow other) throws SemanticException {
         Set<Float> union = new HashSet<>(this.values);
         union.addAll(other.values);
