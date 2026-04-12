@@ -55,6 +55,7 @@ public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier
 
         @Override
         public SetOfIdentifiers mk(Set<Identifier> set) {
+            // ensemble vide = top (aucune info), jamais bottom.
             return new SetOfIdentifiers(set, set.isEmpty());
         }
 
@@ -138,6 +139,8 @@ public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier
             if (function.get(i).contains(id)) {
                 Set<Identifier> updated = new HashSet<>(this.getState(i).elements);
                 updated.remove(id);
+                // updated.isEmpty() = isTop=true (top, pas bottom), oublier une variable
+                // ne rend jamais le code inatteignable.
                 ret = ret.putState(i, new SetOfIdentifiers(updated, updated.isEmpty()));
             }
         }
@@ -195,28 +198,4 @@ public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier
         return new EqualityDomain(lattice.bottom(), null);
     }
 
-    // without transitivity, when we learn that x == y, we add y to x set and x to y
-    // set, but we do not add to x set all the variables that are equal to y, and
-    // vice versa.
-    public EqualityDomain assumeWorking(ValueExpression expression, ProgramPoint src, ProgramPoint dest,
-            SemanticOracle oracle)
-            throws SemanticException {
-        if (!(expression instanceof BinaryExpression))
-            return this;
-        BinaryExpression bin = (BinaryExpression) expression;
-        if (!(bin.getOperator() instanceof ComparisonEq))
-            return this;
-        if (!(bin.getLeft() instanceof Identifier) || !(bin.getRight() instanceof Identifier))
-            return this;
-        Identifier left = (Identifier) bin.getLeft();
-        Identifier right = (Identifier) bin.getRight();
-        EqualityDomain ret = this;
-        Set<Identifier> leftSet = new HashSet<>(ret.getState(left).elements);
-        leftSet.add(right);
-        ret = ret.putState(left, new SetOfIdentifiers(leftSet, false));
-        Set<Identifier> rightSet = new HashSet<>(ret.getState(right).elements);
-        rightSet.add(left);
-        ret = ret.putState(right, new SetOfIdentifiers(rightSet, false));
-        return ret;
-    }
 }
