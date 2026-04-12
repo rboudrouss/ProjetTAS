@@ -70,7 +70,8 @@ public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier
     @Override
     public EqualityDomain assign(Identifier id, ValueExpression expression, ProgramPoint pp, SemanticOracle oracle)
             throws SemanticException {
-        if (isBottom()) return this;
+        if (isBottom())
+            return this;
         EqualityDomain ret = forgetIdentifier(id);
         if (!(expression instanceof Identifier))
             return ret;
@@ -96,7 +97,8 @@ public class EqualityDomain extends FunctionalLattice<EqualityDomain, Identifier
     @Override
     public EqualityDomain assume(ValueExpression expression, ProgramPoint src, ProgramPoint dest, SemanticOracle oracle)
             throws SemanticException {
-        if (isBottom()) return this;
+        if (isBottom())
+            return this;
         if (!(expression instanceof BinaryExpression))
             return this;
         BinaryExpression bin = (BinaryExpression) expression;
