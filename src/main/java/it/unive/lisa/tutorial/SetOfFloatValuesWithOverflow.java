@@ -156,8 +156,6 @@ public class SetOfFloatValuesWithOverflow
         } else if (operator instanceof DivisionOperator) {
             for (Float l : left.values)
                 for (Float r : right.values) {
-                    if (r == 0.0f)
-                        continue; // this execution path crashes; skip, don't discard others
                     float res = l / r;
                     if (Float.isInfinite(res) || Float.isNaN(res))
                         return TOP;
