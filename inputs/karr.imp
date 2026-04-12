@@ -1,0 +1,49 @@
+class karr {
+
+	// After the assignments, the domain should discover: y = x + 1, z = x + 2
+	linear_chain(a) {
+		def x = a;
+		def y = x + 1;
+		def z = y + 1;
+	}
+
+	// x := 2*a, y := a  =>  x = 2*y
+	scaling(a) {
+		def x = a + a;
+		def y = a;
+	}
+
+	// After the if-else, x and y satisfy no common constraint (the join loses info)
+	branch(a, b) {
+		def x = a;
+		def y = b;
+		if (x == y) {
+			def z = x + 1;
+		} else {
+			def z = x + 2;
+		}
+	}
+
+	// Classic Karr example: loop invariant  2*i = j
+	loop_invariant(n) {
+		def i = 0;
+		def j = 0;
+		while (i != n) {
+			i = i + 1;
+			j = j + 2;
+		}
+	}
+
+	// Assign with constant: x is always 5, y is always x+3 = 8
+	constants(a) {
+		def x = 5;
+		def y = x + 3;
+	}
+
+	// Variable reassignment: we should lose the old equality
+	reassign(a) {
+		def x = a;
+		def y = x;
+		x = 0;
+	}
+}
